@@ -3,7 +3,7 @@ from .time import Time
 
 class Jogos (models.Model):
     descricao = models.CharField(max_length=100)
-    time = models.ForeignKey (Time, on_delete=models.CASCADE)
+    time = models.ManyToManyField (Time, related_name="+")
 
     def __str__ (self):
         return self.descricao
