@@ -21,12 +21,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-#&-!&on684l&&ek_0tqdwo9ho*
 DEBUG = os.getenv("DEBUG", "False")
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000", "https://*.fl0.io/"]
-...
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',
     "corsheaders",
     "django_extensions",
     'rest_framework',
@@ -121,9 +120,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
-
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -135,15 +131,14 @@ MEDIA_ENDPOINT = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 FILE_UPLOAD_PERMISSIONS = 0o640
 
+STATIC_URL = '/static/'
 
 if MODE in ["PRODUCTION", "MIGRATE"]:
+    CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     MEDIA_URL = '/media/' 
 else:    
     MY_IP = os.getenv("MY_IP", "127.0.0.1")
     MEDIA_URL = f"http://{MY_IP}:19003/media/"
-
-
-
-if MODE == "PRODUCTION":
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
